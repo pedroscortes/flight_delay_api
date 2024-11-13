@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, validator
 from typing import List
 import pandas as pd
+import uvicorn
 from .model import DelayModel
 
 app = FastAPI()
@@ -61,6 +62,9 @@ async def post_predict(data: PredictRequest) -> dict:
         df = pd.DataFrame([flight.dict() for flight in data.flights])
         features = model.preprocess(df)
         predictions = model.predict(features)
-        return {"predict": predictions}
+        return {"predict": list(predictions)}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080)
