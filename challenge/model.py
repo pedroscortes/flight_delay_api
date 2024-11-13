@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 from typing import Tuple, Union, List
 from sklearn.linear_model import LogisticRegression
-from datetime import datetime
+from sklearn.preprocessing import StandardScaler
 
 class DelayModel:
-    def __init__(
-        self
-    ):
+    def __init__(self):
         self._model = None
+        self._scaler = None
         self._features = [
             "OPERA_Latin American Wings", 
             "MES_7",
@@ -23,24 +23,15 @@ class DelayModel:
         ]
 
     def preprocess(
-        self,
-        data: pd.DataFrame,
-        target_column: str = None
+            self,
+            data: pd.DataFrame,
+            target_column: str = None
     ) -> Union[Tuple[pd.DataFrame, pd.DataFrame], pd.DataFrame]:
         """
         Prepare raw data for training or predict.
         """
-        data = data.copy()  
+        data = data.copy()
         
-        def get_min_diff(row):
-            fecha_o = datetime.strptime(row['Fecha-O'], '%Y-%m-%d %H:%M:%S')
-            fecha_i = datetime.strptime(row['Fecha-I'], '%Y-%m-%d %H:%M:%S')
-            min_diff = ((fecha_o - fecha_i).total_seconds())/60
-            return min_diff
-
-        data['min_diff'] = data.apply(get_min_diff, axis=1)
-        data['delay'] = (data['min_diff'] > 15).astype(int)
-
         features = pd.concat([
             pd.get_dummies(data['OPERA'], prefix='OPERA'),
             pd.get_dummies(data['TIPOVUELO'], prefix='TIPOVUELO'),
@@ -48,41 +39,41 @@ class DelayModel:
         ], axis=1)
         
         features = features.reindex(columns=self._features, fill_value=0)
-        
-        if target_column:
-            target = pd.DataFrame(data['delay'])
-            return features, target
+
+        if self._scaler is not None:
+            features = pd.DataFrame(
+                self._scaler.transform(features),
+                columns=features.columns
+            )
         
         return features
 
     def fit(
-        self,
-        features: pd.DataFrame,
-        target: pd.DataFrame
+            self,
+            features: pd.DataFrame,
+            target: pd.DataFrame
     ) -> None:
         """
         Fit model with preprocessed data.
         """
-        n_y0 = len(target[target['delay'] == 0])
-        n_y1 = len(target[target['delay'] == 1])
+        self._scaler = StandardScaler()
+        features_scaled = self._scaler.fit_transform(features)
         
-        self._model = LogisticRegression(
-            class_weight={
-                1: n_y0/len(target), 
-                0: n_y1/len(target)
-            }
-        )
-        self._model.fit(features, target['delay'])
+        self._model = LogisticRegression(random_state=42)
+        self._model.fit(features_scaled, target['delay'].values)
 
     def predict(
-        self,
-        features: pd.DataFrame
+            self,
+            features: pd.DataFrame
     ) -> List[int]:
         """
         Predict delays for new flights.
         """
         if self._model is None:
             raise ValueError("Model not trained. Call fit() first.")
+        
+        if self._scaler is not None:
+            features = self._scaler.transform(features)
         
         predictions = self._model.predict(features)
         return predictions.tolist()
