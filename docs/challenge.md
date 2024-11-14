@@ -170,3 +170,52 @@ The API demonstrates good stability and performance characteristics:
 - Consistent response times under 500ms for 99% of requests
 - Successfully handles over 100 requests per second
 - Maintains reliability with 100 concurrent users
+
+## Part IV: CI/CD Implementation
+
+### GitHub Actions Configuration
+
+The project implements two main workflows for continuous integration and delivery:
+
+1. **Continuous Integration (ci.yml)**:
+   - **Triggers**:
+     - Push to development and main branches
+     - Pull requests to main
+   - **Environment**:
+     - Ubuntu latest
+     - Python 3.9
+     - Virtual environment for isolation
+   - **Steps**:
+     - Sets up Python environment
+     - Installs project dependencies
+     - Runs model tests (make model-test)
+     - Runs API tests (make api-test)
+     - Uploads test coverage reports as artifacts
+
+2. **Continuous Delivery (cd.yml)**:
+   - **Triggers**:
+     - Push to main branch
+   - **Dependencies**:
+     - Requires successful CI job completion
+   - **Steps**:
+     - Authenticates with Google Cloud
+     - Builds Docker image
+     - Pushes to Container Registry
+     - Deploys to Cloud Run
+     - Maintains zero-downtime deployments
+
+### Security Implementation
+- Sensitive configuration stored in GitHub Secrets:
+  - GCP_PROJECT_ID
+  - GCP_SA_KEY (Service Account credentials)
+- Encrypted secrets management
+- Limited service account permissions
+- Secure Docker builds
+
+### Workflow Integration
+The CI/CD pipeline ensures:
+- Code quality through automated testing
+- Consistent deployment process
+- Infrastructure as Code practices
+- Automated Cloud Run deployments
+- Version control for all configurations
