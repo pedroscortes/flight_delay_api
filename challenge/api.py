@@ -3,15 +3,29 @@ from pydantic import BaseModel, validator
 from typing import List
 import pandas as pd
 import uvicorn
+from datetime import datetime, timedelta
 from .model import DelayModel
 
 app = FastAPI()
 model = DelayModel()
 
 test_data = pd.DataFrame([
-    {"OPERA": "Aerolineas Argentinas", "TIPOVUELO": "N", "MES": 3},
-    {"OPERA": "Aerolineas Argentinas", "TIPOVUELO": "N", "MES": 5}
+    {
+        "OPERA": "Aerolineas Argentinas", 
+        "TIPOVUELO": "N", 
+        "MES": 3,
+        "Fecha-I": datetime(2024, 3, 1, 10, 0),
+        "Fecha-O": datetime(2024, 3, 1, 10, 10)  
+    },
+    {
+        "OPERA": "Aerolineas Argentinas", 
+        "TIPOVUELO": "N", 
+        "MES": 5,
+        "Fecha-I": datetime(2024, 5, 1, 10, 0),
+        "Fecha-O": datetime(2024, 5, 1, 10, 30)  
+    }
 ])
+
 features = model.preprocess(test_data)
 target = pd.DataFrame({'delay': [0, 1]})
 model.fit(features, target)
