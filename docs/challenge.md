@@ -146,3 +146,27 @@ challenge/model.py         30      1    97%
 TOTAL                      75      5    93%
 ```
 
+## Part III: Cloud Deployment
+
+### Deployment Details
+- Platform: Google Cloud Run
+- URL: https://flight-delay-api-658724741852.us-central1.run.app
+- Region: us-central1
+
+### Performance Testing Results
+Stress test results show robust performance under load:
+- Concurrent Users: 100
+- Test Duration: 60 seconds
+- Total Requests: 6,927
+- Failure Rate: 0%
+- Average RPS: 115.64
+- Response Time:
+  - Median: 230ms
+  - 95th percentile: 410ms
+  - Maximum: 6.8s
+
+The API demonstrates good stability and performance characteristics:
+- Zero failed requests during high load
+- Consistent response times under 500ms for 99% of requests
+- Successfully handles over 100 requests per second
+- Maintains reliability with 100 concurrent users
