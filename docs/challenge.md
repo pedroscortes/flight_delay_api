@@ -154,21 +154,22 @@ TOTAL                      75      5    93%
 - Region: us-central1
 
 ### Performance Testing Results
-Stress test results show robust performance under load:
+Latest stress test results demonstrate robust performance under load:
 - Concurrent Users: 100
 - Test Duration: 60 seconds
-- Total Requests: 6,927
+- Total Requests: 7,461
 - Failure Rate: 0%
-- Average RPS: 115.64
-- Response Time:
-  - Median: 230ms
-  - 95th percentile: 410ms
-  - Maximum: 6.8s
+- Average RPS: 124.62
+- Response Times:
+  - Median (50th): 220ms
+  - 90th percentile: 350ms
+  - 95th percentile: 390ms
+  - Maximum: 680ms
 
-The API demonstrates good stability and performance characteristics:
+The API demonstrates excellent stability and performance characteristics:
 - Zero failed requests during high load
-- Consistent response times under 500ms for 99% of requests
-- Successfully handles over 100 requests per second
+- Consistent response times under 450ms for 99% of requests
+- Successfully handles over 120 requests per second
 - Maintains reliability with 100 concurrent users
 
 ## Part IV: CI/CD Implementation
