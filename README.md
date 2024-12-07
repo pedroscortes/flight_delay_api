@@ -50,30 +50,6 @@ In addition, the DS considered relevant the creation of the following columns:
    
 4. All the documentation and explanations that you have to give us must go in the `challenge.md` file inside `docs` folder.
 
-5. To send your challenge, you must do a `POST` request to:
-    `https://advana-challenge-check-api-cr-k4hdbggvoq-uc.a.run.app/software-engineer`
-    This is an example of the `body` you must send:
-    ```json
-    {
-      "name": "Juan Perez",
-      "mail": "juan.perez@example.com",
-      "github_url": "https://github.com/juanperez/latam-challenge.git",
-      "api_url": "https://juan-perez.api"
-    }
-    ```
-    ##### ***PLEASE, SEND THE REQUEST ONCE.***
-
-    If your request was successful, you will receive this message:
-    ```json
-    {
-      "status": "OK",
-      "detail": "your request was received"
-    }
-    ```
-
-
-***NOTE: We recommend to send the challenge even if you didn't manage to finish all the parts.***
-
 ### Context:
 
 We need to operationalize the data science work for the airport team. For this, we have decided to enable an `API` in which they can consult the delay prediction of a flight.
